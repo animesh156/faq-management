@@ -2,11 +2,12 @@ const express = require('express')
 const app = express()
 const dotenv = require('dotenv').config()
 const port = process.env.PORT
+const faqRoutes = require('./routes/faqRoute')
 
 
-app.get('/', (req,res) => {
-    res.send('FAQ system')
-})
+app.use('/api', faqRoutes)
+
+
 
 
 app.listen(port, () => {
