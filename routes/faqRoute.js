@@ -1,14 +1,11 @@
 const express = require('express')
 const router = express.Router()
+const {getFAQs, createFAQ} = require('../controllers/faqController')
+
+router.get('/faqs', getFAQs)
 
 
-router.get('/faqs', (req,res) => (
-    res.json('faq')
-))
-
-
-router.post('/faqs', (req,res) => (
-    res.json('faq created')
-))
+router.post('/faqs', createFAQ)
 
 module.exports = router
+  
