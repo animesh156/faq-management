@@ -1,5 +1,5 @@
 const FAQ = require('../model/FAQModel')
-const redisClient = require('../redis/client')
+const redisClient = require('../redis/cache')
 const translate = require('@vitalets/google-translate-api')
 
 
