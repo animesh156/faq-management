@@ -7,9 +7,13 @@ const connectDB = require("./config/db");
 
 
 app.use(express.json())
-app.use(express.static('public'))
+app.use(express.static(path.join(__dirname, 'public')));
 
 connectDB();
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 app.use("/api", faqRoutes);
 
