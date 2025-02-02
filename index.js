@@ -3,11 +3,10 @@ const app = express();
 const dotenv = require("dotenv").config();
 const port = process.env.PORT;
 const faqRoutes = require("./routes/faqRoute");
-
 const connectDB = require("./config/db");
-const bodyParser = require("body-parser");
 
-app.use(bodyParser.json())
+
+app.use(express.json())
 app.use(express.static('public'))
 
 connectDB();
