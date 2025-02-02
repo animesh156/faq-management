@@ -55,7 +55,7 @@
             }
 
             try {
-                const response = await fetch('http://localhost:6123/api/faqs', {
+                const response = await fetch('https://faq-management-fawn.vercel.app/api/faqs', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -80,7 +80,7 @@
 
         // Function to load FAQs
         async function loadFAQs() {
-            const res = await fetch('http://localhost:6123/api/faqs');
+            const res = await fetch('https://faq-management-fawn.vercel.app/api/faqs');
             const faqs = await res.json();
 
             document.getElementById('faqList').innerHTML = faqs.map(faq => `
