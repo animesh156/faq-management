@@ -28,6 +28,25 @@
         </form>
     </div>
 
+    <!-- Language Selection -->
+    <div class="language-select">
+        <label for="languageSelect" style="color:rgb(69, 69, 228)">Select Language:</label>
+        <select id="languageSelect" onchange="loadFAQs()">
+            <option value="en" selected>English</option>
+            <option value="hi">Hindi</option>
+            <option value="bn">Bengali</option>
+            <option value="ta">Tamil</option>
+            <option value="te">Telugu</option>
+            <option value="mr">Marathi</option>
+            <option value="gu">Gujarati</option>
+            <option value="ml">Malayalam</option>
+            <option value="kn">Kannada</option>
+            <option value="pa">Punjabi</option>
+            <option value="or">Odia</option>
+            
+        </select>
+    </div>
+    
     <!-- Existing FAQs -->
     <h2>Existing FAQs</h2>
     <div id="faqList" class="faq-list"></div>
@@ -36,19 +55,14 @@
     <script>
         let editor;
         ClassicEditor.create(document.querySelector('#answer'))
-            .then(ed => {
-                editor = ed;
-            })
-            .catch(error => {
-                console.error(error);
-            });
+            .then(ed => { editor = ed; })
+            .catch(error => { console.error(error); });
 
         // Create FAQ function to send POST request
         async function createFAQ() {
             const question = document.getElementById('question').value;
             const answer = editor.getData();  // Get the answer from CKEditor
-             console.log(question)
-             console.log(answer)
+
             if (!question || !answer) {
                 alert('Please fill in both the question and answer.');
                 return;
@@ -57,18 +71,15 @@
             try {
                 const response = await fetch('https://faq-management-r5az.onrender.com/api/faqs', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ question, answer })
                 });
 
                 if (response.ok) {
-                    const createdFAQ = await response.json();
-                    console.log('FAQ created successfully:', createdFAQ);
-                    loadFAQs();  // Reload FAQs after creation
-                    document.getElementById('faqForm').reset();  // Reset form fields
-                    editor.setData('');  // Reset CKEditor content
+                    alert('FAQ created successfully');
+                    loadFAQs(); // Reload FAQs after creation
+                    document.getElementById('faqForm').reset();
+                    editor.setData('');
                 } else {
                     alert('Failed to create FAQ');
                 }
@@ -78,20 +89,26 @@
             }
         }
 
-        // Function to load FAQs
+        // Function to load FAQs based on selected language
         async function loadFAQs() {
-            const res = await fetch('https://faq-management-r5az.onrender.com/api/faqs');
-            const faqs = await res.json();
+            const selectedLang = document.getElementById('languageSelect').value;
+            try {
+                const res = await fetch(`https://faq-management-r5az.onrender.com/api/faqs?lang=${selectedLang}`);
+                const faqs = await res.json();
 
-            document.getElementById('faqList').innerHTML = faqs.map(faq => `
-                <div class="faq-item">
-                    <h3>${faq.question}</h3>
-                    <p>${faq.answer}</p>
-                </div>
-            `).join("");
+                document.getElementById('faqList').innerHTML = faqs.map(faq => `
+                    <div class="faq-item">
+                        <h3>${faq.question}</h3>
+                        <p>${faq.answer}</p>
+                    </div>
+                `).join("");
+            } catch (error) {
+                console.error('Error loading FAQs:', error);
+                document.getElementById('faqList').innerHTML = "<p>Failed to load FAQs</p>";
+            }
         }
 
-        // Initially load FAQs
+        // Initially load FAQs in default language (English)
         loadFAQs();
     </script>
 </body>
