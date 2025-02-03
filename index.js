@@ -1,24 +1,37 @@
 const express = require("express");
-const app = express();
 const dotenv = require("dotenv").config();
-const port = process.env.PORT;
-const cors = require('cors')
-const faqRoutes = require("./routes/faqRoute");
+const cors = require("cors");
+const path = require("path");
 const connectDB = require("./config/db");
-const path = require('path')
+const faqRoutes = require("./routes/faqRoute");
 
-app.use(cors)
-app.use(express.json())
-app.use(express.static(path.join(__dirname, 'public')));
+const app = express();
+const port = process.env.PORT || 3000; // Ensure a default port is set
 
-connectDB();
+// Connect to Database (Ensure connection before starting server)
+connectDB()
+  .then(() => {
+    console.log("Database Connected Successfully");
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
+    // Middleware
+    app.use(cors()); 
+    app.use(express.json());
+    app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/api", faqRoutes);
+    // Routes
+    app.get("/", (req, res) => {
+      res.sendFile(path.join(__dirname, "public", "index.html"));
+    });
 
-app.listen(port, () => {
-  console.log(`Sever started at ${port}`);
-});
+    app.use("/api", faqRoutes);
+
+    // Start Server after DB Connection
+    app.listen(port, () => {
+      console.log(`Server started at http://localhost:${port}`);
+    });
+
+  })
+  .catch((error) => {
+    console.error("Database Connection Failed", error);
+    process.exit(1); // Exit if DB connection fails
+  });
